@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oops - Project AI Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .fun-message {
+            animation: float 3s ease-in-out infinite;
+            text-align: center;
+            margin-top: 100px;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .fun-emoji {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <div class="container-fluid px-4">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="{{ url_for('dashboard') }}">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo" style="height:40px;" class="me-2">
+        <span class="fw-bold">Project AI Assistant</span>
+    </a>
+
+    <!-- Logout button -->
+    <div class="d-flex">
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Fun Content -->
+<div class="container d-flex flex-column align-items-center justify-content-center vh-100">
+    <div class="fun-message">
+        <span class="fun-emoji">🚧</span>
+        <h1 class="fw-bold">Oops!</h1>
+        <p class="text-muted">You clicked the wrong department.<br> For this demo, please go back and select <strong>FTB</strong>.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-3">← Back to Dashboard</a>
+    </div>
+</div>
+
+</body>
+</html>
