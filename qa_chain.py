@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import CSVLoader
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -105,3 +105,4 @@ ANSWER:
             return f"I apologize, but I encountered an error while processing your request. Please try again."
 
     return query_chain
+
