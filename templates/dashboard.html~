@@ -14,6 +14,7 @@
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center" href="{{ url_for('dashboard') }}">
         <img src="{{ url_for('static', filename='llm.png') }}" alt="Logo" style="height:40px;" class="me-2">
+        <span class="fw-bold">Project AI Assistant</span>
     </a>
 
     <!-- Logout button -->

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enterprise Q&A</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .chat-box {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px;
+    }
+    .chat-message {
+        padding: 10px 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    .chat-user {
+        background-color: #e0f2fe;
+        align-self: flex-end;
+    }
+    .chat-bot {
+        background-color: #f1f5f9;
+        align-self: flex-start;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="chat-box d-flex flex-column">
+    <div id="chat-window" class="d-flex flex-column mb-3" style="min-height:300px;">
+      <!-- Messages will appear here -->
+    </div>
+
+    <form id="chat-form" class="d-flex">
+      <input type="text" id="prompt" class="form-control me-2" placeholder="How can I help you?">
+      <button class="btn btn-primary">Interact with LLM</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('chat-form');
+  const promptInput = document.getElementById('prompt');
+  const chatWindow = document.getElementById('chat-window');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userMessage = promptInput.value;
+
+    // Display user message
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-message chat-user align-self-end';
+    userDiv.innerText = userMessage;
+    chatWindow.appendChild(userDiv);
+
+    // Send to backend
+    const response = await fetch('/qa_chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: userMessage })
+    });
+    const data = await response.json();
+
+    // Display bot response
+    const botDiv = document.createElement('div');
+    botDiv.className = 'chat-message chat-bot';
+    botDiv.innerText = data.answer;
+    chatWindow.appendChild(botDiv);
+
+    promptInput.value = '';
+  });
+</script>
+
+</body>
+</html>

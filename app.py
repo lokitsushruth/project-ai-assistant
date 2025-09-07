@@ -1,5 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+from dotenv import load_dotenv
+from qa_chain import build_qa
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -79,6 +84,66 @@ def logout():
 @login_required
 def insights():
     return render_template("insights.html")
+
+
+
+# For the FTB Enterprise Q&A
+# Global QA chain
+qa = None
+
+# 1️⃣ Page route
+@app.route("/qa_chat", methods=["GET"])
+@login_required
+def qa_page():
+    # Just render the chatbot page
+    return render_template("qa_chat.html")
+
+
+# 2️⃣ API endpoint for queries
+@app.route("/qa_api", methods=["POST"])
+@login_required
+def qa_endpoint():
+    global qa
+    try:
+        if qa is None:
+            # Build QA only on first request
+            csv_files = [a for a in os.listdir(".") if a.endswith(".csv")]
+            if not csv_files:
+                return jsonify({"answer": "No CSV files found for data processing. Please upload data files."})
+            
+            qa = build_qa(csv_files)
+
+        query = request.json.get("query")
+        
+        if not query or not query.strip():
+            return jsonify({"answer": "Please provide a valid question."})
+        
+        # Call the query function
+        result = qa(query)
+        
+        # Ensure we return a string
+        if hasattr(result, 'content'):
+            result = result.content
+        elif not isinstance(result, str):
+            result = str(result)
+            
+        return jsonify({"answer": result})
+        
+    except Exception as e:
+        print(f"Error in QA endpoint: {e}")
+        return jsonify({"answer": "I apologize, but I encountered a system error. Please try again later."})
+
+
+@app.route("/debug")
+def debug():
+    return f"""
+    <h1>Debug Info</h1>
+    <p>Current working directory: {os.getcwd()}</p>
+    <p>CSV files in directory: {[f for f in os.listdir('.') if f.endswith('.csv')]}</p>
+    <p>FAISS index exists: {os.path.exists('faiss_index')}</p>
+    <p>GROQ_API_KEY set: {'GROQ_API_KEY' in os.environ}</p>
+    """
+
 
 
 if __name__ == "__main__":
